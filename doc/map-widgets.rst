@@ -57,7 +57,10 @@ type::
 You will need to define the tileset URL using
 ``ckanext.spatial.common_map.custom.url``. This follows the `Leaflet URL
 template`_ format (ie {s} for subdomains if any, {z} for zoom and {x} {y} for
-tile coordinates). Additionally you can use
+tile coordinates). This configuration item accepts a comma delimited list of 
+tilesets. If multiple tilesets are provided, they will be created as a single 
+group of layers and used as the base layer.
+Additionally you can use
 ``ckanext.spatial.common_map.subdomains`` and
 ``ckanext.spatial.common_map.attribution`` if needed (these two will also work
 for Stamen and MapBox layers if you want to tweak the defaults.

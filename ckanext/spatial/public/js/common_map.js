@@ -36,6 +36,7 @@
                 });
 
       var baseLayer;
+      var isGroup = false;
       
       map = new L.Map(container, leafletMapOptions);
 
@@ -55,12 +56,31 @@
 
       } else if (mapConfig.type == 'custom') {
           // Custom XYZ layer
-          baseLayerUrl = mapConfig['custom.url'];
+          // Updated to detect if multiple URLs are provided
+          // If so add these to the map as a group.
+          baseLayerUrls = mapConfig['custom.url'].split(",");
+          isGroup = baseLayerUrls.length > 1;
+
           if (mapConfig.subdomains) leafletBaseLayerOptions.subdomains = mapConfig.subdomains;
           if (mapConfig.tms) leafletBaseLayerOptions.tms = mapConfig.tms;
           leafletBaseLayerOptions.attribution = mapConfig.attribution;
 
-          baseLayer = new L.TileLayer(baseLayerUrl, leafletBaseLayerOptions);
+          if (isGroup){
+                var layers = [];
+                baseLayerUrls.map((layer, i) => {
+                    if (i == 0){
+                      layers.push(new L.TileLayer(layer, leafletBaseLayerOptions));
+                    }
+                    else{
+                        leafletBaseLayerOptions.attribution = '';
+                        layers.push(new L.TileLayer(layer, leafletBaseLayerOptions));
+                    }
+                });
+                baseLayer = L.layerGroup(layers);
+          }
+          else{
+              baseLayer = new L.TileLayer(baseLayerUrls[0], leafletBaseLayerOptions);
+          }
 
       } else if (mapConfig.type == 'wms') {
 
